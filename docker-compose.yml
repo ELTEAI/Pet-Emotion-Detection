@@ -1,0 +1,60 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    image: dogmotion:latest
+    container_name: dog-ai-app
+    ports:
+      - "8501:8501"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      # ✅ 模型目录挂载（保持本地文件系统）
+      - ./LLM_Models:/app/LLM_Models
+      - ./app:/app/app
+      # ✅ app 代码中 model 目录（保存轻量模型如 ResNet）
+      - ./app/model:/app/app/model
+
+      # ✅ 上传路径挂载，避免容器重启数据丢失
+      - ./app/uploads:/app/app/uploads
+      
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    runtime: nvidia
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+
+  redis:
+    image: redis:latest
+    container_name: dog-ai-redis
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: bitnami/postgresql:latest
+    container_name: dog-ai-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRESQL_USERNAME=doguser
+      - POSTGRESQL_PASSWORD=dogpass
+      - POSTGRESQL_DATABASE=dogdb
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: dog-ai-tunnel
+    depends_on:
+      - app
+    command: tunnel run dog-ai-tunnel
+    volumes:
+      - ./cloudflared:/etc/cloudflared
+
