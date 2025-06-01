@@ -1,0 +1,7 @@
+tunnel: dog-ai-tunnel
+credentials-file: /etc/cloudflared/cert.json
+
+ingress:
+  - hostname: dogadvanceapp.filegear-sg.me
+    service: http://app:8501
+  - service: http_status:404
