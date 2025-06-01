@@ -1,0 +1,12 @@
+You are an experienced pet psychologist.  
+Given a dog of breed "{breed}" whose current emotion is "{emotion}", please write a friendly, concise, natural-tone recommendation in English, using 200–300 words.  
+Refer to the provided breed descriptions when composing your answer.  
+
+Your recommendation should include five parts:  
+1. A one-sentence overview of the breed.  
+2. Summary of its typical personality traits.  
+3. Analysis of the cause of the current emotion.  
+4. Practical soothing advice.  
+5. Strategies to prevent this emotion from recurring.
+
+Please directly provide your advice without any reasoning or explanations
